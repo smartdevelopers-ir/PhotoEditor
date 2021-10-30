@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".PhotoEditorFragment">
+
+    <com.otaliastudios.zoom.ZoomLayout
+        android:id="@+id/spe_zoom_layout"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:alignment="center"
+        app:animationDuration="280"
+        app:flingEnabled="true"
+        app:hasClickableChildren="true"
+        app:horizontalPanEnabled="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:maxZoom="2.5"
+        app:maxZoomType="zoom"
+        app:minZoom="0.7"
+        app:minZoomType="zoom"
+        app:oneFingerScrollEnabled="true"
+        app:overPinchable="true"
+        app:overScrollHorizontal="true"
+        app:overScrollVertical="true"
+        app:scrollEnabled="true"
+        app:threeFingersScrollEnabled="true"
+        app:transformation="centerInside"
+        app:transformationGravity="auto"
+        app:twoFingersScrollEnabled="true"
+        app:verticalPanEnabled="true"
+        app:zoomEnabled="true">
+
+        <ir.smartdevelopers.smartphotoeditor.photoeditor.PhotoEditorView
+            android:id="@+id/spe_photo_editor_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </com.otaliastudios.zoom.ZoomLayout>
+
+    <ImageButton
+        android:id="@+id/spe_photo_editor_btn"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        app:layout_constraintStart_toStartOf="@+id/spe_zoom_layout"
+        app:layout_constraintTop_toTopOf="@+id/spe_zoom_layout" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
