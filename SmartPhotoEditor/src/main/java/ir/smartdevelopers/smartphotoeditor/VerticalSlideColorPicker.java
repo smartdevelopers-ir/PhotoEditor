@@ -24,13 +24,14 @@ public class VerticalSlideColorPicker extends View {
     private int viewHeight;
     private int centerX;
     private float colorPickerRadius;
-    private OnColorChangeListener onColorChangeListener;
+    private Listener mListener;
     private RectF colorPickerBody;
     private float selectorYPos;
     private int borderColor;
     private float borderWidth;
     private int[] colors;
     private boolean cacheBitmap = true;
+    private int mDeviceWidth;
     private static final int[] DEFAULT_COLORS= {
             Color.rgb(0,0,0),
             Color.rgb(255,255,255),
@@ -45,7 +46,7 @@ public class VerticalSlideColorPicker extends View {
     };
     public VerticalSlideColorPicker(Context context) {
         super(context);
-        init();
+        init(context);
     }
 
     public VerticalSlideColorPicker(Context context, AttributeSet attrs) {
@@ -56,7 +57,7 @@ public class VerticalSlideColorPicker extends View {
         try {
             borderColor = a.getColor(R.styleable.VerticalSlideColorPicker_borderColor, Color.WHITE);
             defaultColor =
-                    a.getColor(R.styleable.VerticalSlideColorPicker_defaultColor, Color.TRANSPARENT);
+                    a.getColor(R.styleable.VerticalSlideColorPicker_defaultColor, Color.parseColor("#1E88E5"));
             borderWidth = a.getDimension(R.styleable.VerticalSlideColorPicker_borderWidth, 5f);
             int colorsResourceId =
                     a.getResourceId(R.styleable.VerticalSlideColorPicker_colors, 0);
@@ -68,22 +69,22 @@ public class VerticalSlideColorPicker extends View {
         } finally {
             a.recycle();
         }
-        init();
+        init(context);
     }
 
     public VerticalSlideColorPicker(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        init();
+        init(context);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public VerticalSlideColorPicker(Context context, AttributeSet attrs, int defStyleAttr,
                                     int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
-        init();
+        init(context);
     }
 
-    private void init() {
+    private void init(Context context) {
         setWillNotDraw(false);
         paint = new Paint();
         paint.setStyle(Paint.Style.FILL);
@@ -98,6 +99,7 @@ public class VerticalSlideColorPicker extends View {
         strokePaint.setStrokeWidth(borderWidth);
 
         setDrawingCacheEnabled(true);
+        mDeviceWidth=context.getResources().getDisplayMetrics().widthPixels;
     }
 
     @Override
@@ -121,6 +123,8 @@ public class VerticalSlideColorPicker extends View {
         }
     }
 
+    private Rect bound=new Rect();
+    private boolean mScaling=false;
     @Override
     public boolean onTouchEvent(MotionEvent event) {
 
@@ -130,10 +134,34 @@ public class VerticalSlideColorPicker extends View {
         selectorYPos = yPos;
         defaultColor = bitmap.getPixel(viewWidth / 2, (int) selectorYPos);
 
-        if (onColorChangeListener != null) {
-            onColorChangeListener.onColorChange(defaultColor);
+        if (mListener != null) {
+            mListener.onColorChange(defaultColor);
+        }
+        if (event.getAction()==MotionEvent.ACTION_UP){
+            mScaling=false;
+            if (mListener != null) {
+                mListener.onRelease();
+            }
         }
 
+        if (event.getAction()==MotionEvent.ACTION_MOVE){
+            if (mListener != null) {
+                mListener.onMove();
+            }
+
+            getHitRect(bound);
+            int w=getWidth();
+            bound.inset(-w,-w);
+            int x= (int) (getLeft()+event.getX());
+            int y= (int) (getTop()+event.getY());
+            if (!bound.contains(x,y) || mScaling){
+                mScaling=true;
+                float xPercent=1-(event.getRawX()/mDeviceWidth);
+                if (mListener != null) {
+                    mListener.onBrushScaled(xPercent);
+                }
+            }
+        }
         //invalidate();
 
         return true;
@@ -179,17 +207,17 @@ public class VerticalSlideColorPicker extends View {
     public void resetToDefault() {
         selectorYPos = borderWidth + colorPickerRadius;
 
-        if (onColorChangeListener != null) {
-            onColorChangeListener.onColorChange(defaultColor);
+        if (mListener != null) {
+            mListener.onColorChange(defaultColor);
         }
 
         invalidate();
     }
 
-    public void setOnColorChangeListener(OnColorChangeListener onColorChangeListener) {
-        this.onColorChangeListener = onColorChangeListener;
-        if (onColorChangeListener != null) {
-            onColorChangeListener.onColorChange(defaultColor);
+    public void setListener(Listener listener) {
+        this.mListener = listener;
+        if (listener != null) {
+            listener.onColorChange(defaultColor);
         }
     }
 
@@ -197,8 +225,12 @@ public class VerticalSlideColorPicker extends View {
         return defaultColor;
     }
 
-    public interface OnColorChangeListener {
 
+    public interface Listener {
         void onColorChange(int selectedColor);
+        void onBrushScaled(float percentChanged);
+        void onRelease();
+        void onMove();
     }
+
 }

@@ -6,46 +6,116 @@
     android:layout_height="match_parent"
     tools:context=".PhotoEditorFragment">
 
-    <com.otaliastudios.zoom.ZoomLayout
+    <ir.smartdevelopers.smartphotoeditor.PinchZoomViewGroup
         android:id="@+id/spe_zoom_layout"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:alignment="center"
-        app:animationDuration="280"
-        app:flingEnabled="true"
-        app:hasClickableChildren="true"
-        app:horizontalPanEnabled="true"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:maxZoom="2.5"
-        app:maxZoomType="zoom"
-        app:minZoom="0.7"
-        app:minZoomType="zoom"
-        app:oneFingerScrollEnabled="true"
-        app:overPinchable="true"
-        app:overScrollHorizontal="true"
-        app:overScrollVertical="true"
-        app:scrollEnabled="true"
-        app:threeFingersScrollEnabled="true"
-        app:transformation="centerInside"
-        app:transformationGravity="auto"
-        app:twoFingersScrollEnabled="true"
-        app:verticalPanEnabled="true"
-        app:zoomEnabled="true">
+        app:layout_constraintTop_toTopOf="parent">
 
         <ir.smartdevelopers.smartphotoeditor.photoeditor.PhotoEditorView
             android:id="@+id/spe_photo_editor_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
-    </com.otaliastudios.zoom.ZoomLayout>
+    </ir.smartdevelopers.smartphotoeditor.PinchZoomViewGroup>
+<!-- Brush-->
+    <ir.smartdevelopers.smartphotoeditor.BrushButton
+        android:id="@+id/spe_photo_editor_btnBrush"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/spe_zoom_layout"
 
+        />
+
+    <ir.smartdevelopers.smartphotoeditor.VerticalSlideColorPicker
+        android:id="@+id/spe_photo_editor_brushColorSelector"
+        android:layout_width="20dp"
+        android:layout_height="280dp"
+        android:layout_marginTop="24dp"
+        app:layout_constraintEnd_toEndOf="@id/spe_photo_editor_btnBrush"
+        app:layout_constraintStart_toStartOf="@id/spe_photo_editor_btnBrush"
+        app:layout_constraintTop_toBottomOf="@id/spe_photo_editor_btnBrush"
+        android:visibility="invisible"
+        />
     <ImageButton
-        android:id="@+id/spe_photo_editor_btn"
+        android:id="@+id/spe_photo_editor_brushEraser"
         android:layout_width="24dp"
         android:layout_height="24dp"
-        app:layout_constraintStart_toStartOf="@+id/spe_zoom_layout"
-        app:layout_constraintTop_toTopOf="@+id/spe_zoom_layout" />
+        app:layout_constraintTop_toBottomOf="@id/spe_photo_editor_brushColorSelector"
+        app:layout_constraintEnd_toEndOf="@id/spe_photo_editor_brushColorSelector"
+        app:layout_constraintStart_toStartOf="@id/spe_photo_editor_brushColorSelector"
+        />
+    <!---->
+    <FrameLayout
+        android:id="@+id/spe_photo_editor_textInputContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#9A050505"
+        tools:visibility="gone"
+        android:visibility="gone"
+        >
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/spe_photo_editor_txtInputTextHelper"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:textSize="@dimen/spe_default_input_text_size"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:layout_margin="48dp"
+            android:maxLines="8"
+            app:autoSizeMaxTextSize="@dimen/spe_default_input_text_size"
+            app:autoSizeMinTextSize="20dp"
+            app:autoSizeTextType="uniform"
+            tools:textColor="#fff"
+            tools:text="MMMMMMMMMMM"
+            android:minHeight="48dp"
+            android:visibility="invisible"
+            android:maxLength="400"
+            />
 
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/spe_photo_editor_edtInputText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_margin="48dp"
+            android:background="@null"
+            android:gravity="bottom|center_horizontal"
+            android:minHeight="48dp"
+            android:padding="0dp"
+            android:textSize="@dimen/spe_default_input_text_size"
+            tools:textSize="20dp"
+            android:maxLines="16"
+            android:maxLength="500"
+            tools:text="dasds\n\n"
+            android:inputType="textMultiLine"
+            tools:ignore="SpeakableTextPresentCheck" />
+    </FrameLayout>
+    <ir.smartdevelopers.smartphotoeditor.TextButton
+        android:id="@+id/spe_photo_editor_btnInsertText"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintEnd_toStartOf="@id/spe_photo_editor_btnBrush"
+        app:layout_constraintTop_toTopOf="@+id/spe_zoom_layout"
+
+        />
+
+    <ir.smartdevelopers.smartphotoeditor.VerticalSlideColorPicker
+        android:id="@+id/spe_photo_editor_textColorSelector"
+        android:layout_width="20dp"
+        android:layout_height="280dp"
+        android:layout_marginTop="24dp"
+        app:layout_constraintEnd_toEndOf="@id/spe_photo_editor_btnBrush"
+        app:layout_constraintStart_toStartOf="@id/spe_photo_editor_btnBrush"
+        app:layout_constraintTop_toBottomOf="@id/spe_photo_editor_btnBrush"
+        android:visibility="invisible"
+        />
 </androidx.constraintlayout.widget.ConstraintLayout>

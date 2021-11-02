@@ -11,14 +11,17 @@ import android.widget.Button;
 
 import java.util.Objects;
 
+import ir.smartdevelopers.smartphotoeditor.BrushButton;
 import ir.smartdevelopers.smartphotoeditor.VerticalSlideColorPicker;
 import ir.smartdevelopers.smartphotoeditor.photoeditor.OnPhotoEditorListener;
 import ir.smartdevelopers.smartphotoeditor.photoeditor.PhotoEditor;
 import ir.smartdevelopers.smartphotoeditor.photoeditor.PhotoEditorView;
 import ir.smartdevelopers.smartphotoeditor.photoeditor.ViewType;
+import ir.smartdevelopers.smartphotoeditor.photoeditor.shape.ShapeBuilder;
+import ir.smartdevelopers.smartphotoeditor.photoeditor.shape.ShapeType;
 
 
-public class MainActivity extends AppCompatActivity implements ColorPickerDialog.OnColorChangedListener {
+public class MainActivity extends AppCompatActivity  {
 
     private PhotoEditor mPhotoEditor;
     private PhotoEditorView mPhotoEditorView;
@@ -33,22 +36,26 @@ public class MainActivity extends AppCompatActivity implements ColorPickerDialog
         mZoomLayout=findViewById(R.id.zoomLayout);
         mVerticalSlideColorPicker=findViewById(R.id.colorPicker);
         Button btnBrush=findViewById(R.id.btnBrush);
+        BrushButton btnBrushIcon=findViewById(R.id.btnBrushIcon);
+        btnBrushIcon.showBackGround();
         mPhotoEditor=new PhotoEditor.Builder(this,mPhotoEditorView)
                 .build();
 
 
         btnBrush.setOnClickListener(v->{
             mPhotoEditor.addText("salam", Color.BLACK);
-            new ColorPickerDialog(MainActivity.this, MainActivity.this, Color.WHITE).show();
 
             if (Objects.equals(btnBrush.getTag(),"on")){
 //                mPhotoEditor.setBrushDrawingMode(false);
                 btnBrush.setText("turn on brush");
                 btnBrush.setTag("off");
+                btnBrushIcon.hideBackground();
             }else {
 //                mPhotoEditor.setBrushDrawingMode(true);
                 btnBrush.setText("turn off brush");
                 btnBrush.setTag("on");
+                btnBrushIcon.showBackGround();
+
             }
         });
         mPhotoEditor.setOnPhotoEditorListener(new OnPhotoEditorListener() {
@@ -87,16 +94,38 @@ public class MainActivity extends AppCompatActivity implements ColorPickerDialog
 
             }
         });
-        mVerticalSlideColorPicker.setOnColorChangeListener(new VerticalSlideColorPicker.OnColorChangeListener() {
+        mVerticalSlideColorPicker.setListener(new VerticalSlideColorPicker.Listener() {
             @Override
             public void onColorChange(int selectedColor) {
-                btnBrush.setTextColor(selectedColor);
+                btnBrushIcon.showBrushSize();
+                btnBrushIcon.setColor(selectedColor);
+            }
+
+            @Override
+            public void onBrushScaled(float percentChanged) {
+
+                btnBrushIcon.changeBrushSize(percentChanged);
+            }
+
+            @Override
+            public void onRelease() {
+
+                btnBrushIcon.showEditIcon();
+                mPhotoEditor.setBrushDrawingMode(true);
+                ShapeBuilder shapeBuilder=new ShapeBuilder()
+                        .withShapeColor(btnBrushIcon.getColor())
+                        .withShapeSize(btnBrushIcon.getBrushSize())
+                        .withShapeType(ShapeType.BRUSH);
+                mPhotoEditor.setShape(shapeBuilder);
+            }
+
+            @Override
+            public void onMove() {
+
             }
         });
-    }
-
-    @Override
-    public void colorChanged(int color) {
 
     }
+
+
 }

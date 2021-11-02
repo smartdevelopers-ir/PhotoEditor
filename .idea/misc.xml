@@ -3,11 +3,15 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/SmartDevelopers/ImageEditor/SmartPhotoEditor/src/main/res/drawable/ic_text.xml" value="0.25833333333333336" />
         <entry key="..\:/Users/SmartDevelopers/ImageEditor/SmartPhotoEditor/src/main/res/drawable/rounded_border_tv.xml" value="0.25833333333333336" />
-        <entry key="..\:/Users/SmartDevelopers/ImageEditor/SmartPhotoEditor/src/main/res/layout/activity_photo_editor.xml" value="0.21422101449275363" />
-        <entry key="..\:/Users/SmartDevelopers/ImageEditor/SmartPhotoEditor/src/main/res/layout/spe_fragment_photo_editor.xml" value="0.2" />
-        <entry key="..\:/Users/SmartDevelopers/ImageEditor/SmartPhotoEditor/src/main/res/layout/view_photo_editor_image.xml" value="0.21014492753623187" />
-        <entry key="..\:/Users/SmartDevelopers/ImageEditor/app/src/main/res/layout/activity_main.xml" value="0.21829710144927536" />
+        <entry key="..\:/Users/SmartDevelopers/ImageEditor/SmartPhotoEditor/src/main/res/drawable/spe_ic_brush.xml" value="0.25833333333333336" />
+        <entry key="..\:/Users/SmartDevelopers/ImageEditor/SmartPhotoEditor/src/main/res/layout/popupwindow.xml" value="0.2421875" />
+        <entry key="..\:/Users/SmartDevelopers/ImageEditor/SmartPhotoEditor/src/main/res/layout/spe_brush_button_layout.xml" value="0.2421875" />
+        <entry key="..\:/Users/SmartDevelopers/ImageEditor/SmartPhotoEditor/src/main/res/layout/spe_fragment_photo_editor.xml" value="0.264" />
+        <entry key="..\:/Users/SmartDevelopers/ImageEditor/SmartPhotoEditor/src/main/res/layout/spe_text_button_layout.xml" value="0.2421875" />
+        <entry key="..\:/Users/SmartDevelopers/ImageEditor/SmartPhotoEditor/src/main/res/layout/view_photo_editor_text.xml" value="0.2421875" />
+        <entry key="..\:/Users/SmartDevelopers/ImageEditor/app/src/main/res/layout/activity_main.xml" value="0.2421875" />
       </map>
     </option>
   </component>
