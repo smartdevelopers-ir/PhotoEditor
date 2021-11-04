@@ -1,6 +1,7 @@
 package ir.smartdevelopers.smartphotoeditor;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
@@ -9,30 +10,34 @@ import android.text.TextWatcher;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.FrameLayout;
-import android.widget.TextView;
+import android.widget.ImageButton;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.widget.AppCompatEditText;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.fragment.app.Fragment;
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator;
 
 import java.util.Objects;
 
+import ir.smartdevelopers.smartphotoeditor.photoeditor.OnPhotoEditorListener;
+import ir.smartdevelopers.smartphotoeditor.photoeditor.OnSaveBitmap;
 import ir.smartdevelopers.smartphotoeditor.photoeditor.PhotoEditor;
 import ir.smartdevelopers.smartphotoeditor.photoeditor.PhotoEditorView;
+import ir.smartdevelopers.smartphotoeditor.photoeditor.SaveSettings;
 import ir.smartdevelopers.smartphotoeditor.photoeditor.TextStyleBuilder;
+import ir.smartdevelopers.smartphotoeditor.photoeditor.ViewType;
 import ir.smartdevelopers.smartphotoeditor.photoeditor.shape.ShapeBuilder;
 
-public class PhotoEditorFragment extends Fragment implements KeyboardHeightProvider.KeyboardHeightObserver{
+public class PhotoEditorFragment extends Fragment implements KeyboardHeightProvider.KeyboardHeightObserver,
+EmojiDialog.OnEmojiListener{
 
     private PhotoEditorView mPhotoEditorView;
     private PhotoEditor mPhotoEditor;
@@ -40,7 +45,9 @@ public class PhotoEditorFragment extends Fragment implements KeyboardHeightProvi
     private VerticalSlideColorPicker mBrushColorPiker,mTextColorPicker;
     private BrushButton btnBrush;
     private TextButton btnInsertText;
+    private EmojiButton btnEmoji;
     private EditText edtTextInput;
+    private ImageButton btnUndo;
     private FrameLayout mTextInputContainer;
     private AppCompatTextView txtTextInputHelper;
     private static final long ANIMATION_DURATION=200;
@@ -83,22 +90,82 @@ public class PhotoEditorFragment extends Fragment implements KeyboardHeightProvi
         mPhotoEditorView.getSource().setImageURI(mImageUri);
 //        Glide.with(view).load(mImageUri).into(mPhotoEditorView.getSource());
         initViews();
+
+        initPhotoEditorListener();
     }
 
+    private void initPhotoEditorListener() {
+        mPhotoEditor.setOnPhotoEditorListener(new OnPhotoEditorListener() {
+            private int mDrawingViewCount=0;
+            @Override
+            public void onEditTextChangeListener(View rootView, String text, int colorCode) {
+                showTextInput(rootView,text,colorCode);
+            }
+
+            @Override
+            public void onAddViewListener(ViewType viewType, int numberOfAddedViews) {
+                if (numberOfAddedViews >0 && viewType==ViewType.BRUSH_DRAWING){
+                    mDrawingViewCount++;
+                }
+                if (mDrawingViewCount > 0){
+                    btnUndo.setVisibility(View.VISIBLE);
+                }
+            }
+
+            @Override
+            public void onRemoveViewListener(ViewType viewType, int numberOfAddedViews) {
+                if (viewType == ViewType.BRUSH_DRAWING){
+                    mDrawingViewCount--;
+                }
+                if (mDrawingViewCount==0){
+                    btnUndo.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void onStartViewChangeListener(ViewType viewType) {
+
+            }
+
+            @Override
+            public void onStopViewChangeListener(ViewType viewType) {
+
+            }
+
+            @Override
+            public void onTouchSourceImage(MotionEvent event) {
+
+            }
+        });
+
+    }
+
+    public void save(){
+
+
+        mPhotoEditor.saveAsBitmap(new OnSaveBitmap() {
+            @Override
+            public void onBitmapReady(Bitmap saveBitmap) {
+
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+
+            }
+        });
+    }
     private void initViews() {
         //<editor-fold desc="Brush Section">
         mBrushColorPiker.setVisibility(View.INVISIBLE);
         btnBrush.setOnClickListener(v->{
             if (Objects.equals("active",btnBrush.getTag())){
                 // hide color picker and background
-                btnBrush.setTag("deactivate");
-                hideColorPicker(mBrushColorPiker);
-                btnBrush.hideBackground();
-                mPhotoEditor.setBrushDrawingMode(false);
+                deactivateBrushingTools(true);
             }else {
                 // show color picker
                 btnBrush.setTag("active");
-                showColorPicker(mBrushColorPiker);
+                showColorPicker(mBrushColorPiker,true);
                 btnBrush.showBackGround();
                 mPhotoEditor.setBrushDrawingMode(true);
             }
@@ -136,16 +203,7 @@ public class PhotoEditorFragment extends Fragment implements KeyboardHeightProvi
 //        txtTextInputHelper.setTextSize(DEFAULT_TEXT_SIZE);
         btnInsertText.setOnClickListener(v->{
             if (!Objects.equals("active",btnInsertText.getTag())){
-                btnInsertText.setTag("active");
-                showColorPicker(mTextColorPicker);
-                btnInsertText.showBackGround();
-                // reset text size
-                edtTextInput.setTextSize(TypedValue.COMPLEX_UNIT_PX,DEFAULT_TEXT_SIZE);
-//                txtTextInputHelper.setTextSize(DEFAULT_TEXT_SIZE);
-
-                mTextInputContainer.setVisibility(View.VISIBLE);
-                edtTextInput.requestFocus();
-                showKeyboard();
+                showTextInput(null,"", VerticalSlideColorPicker.DEFAULT_COLOR);
 
             }else {
                 //todo : change text style
@@ -172,6 +230,7 @@ public class PhotoEditorFragment extends Fragment implements KeyboardHeightProvi
             @Override
             public void onColorChange(int selectedColor) {
                 edtTextInput.setTextColor(selectedColor);
+                btnInsertText.setColor(selectedColor);
             }
 
             @Override
@@ -217,18 +276,72 @@ public class PhotoEditorFragment extends Fragment implements KeyboardHeightProvi
                 }
             }
         });
+
+        btnUndo.setImageResource(R.drawable.spe_ic_undo);
+        btnUndo.setOnClickListener(v->{
+            mPhotoEditor.undo();
+
+
+        });
+
+        btnEmoji.setOnClickListener(v->{
+            mPhotoEditorView.getSource().setImageResource(R.drawable.ff);
+
+//            if (Objects.equals(btnBrush.getTag(),"active")){
+//                deactivateBrushingTools(true);
+//            }
+//            btnEmoji.showBackGround();
+//            showEmojiBottomSheet();
+        });
+    }
+
+    private void showEmojiBottomSheet() {
+        EmojiDialog emojiDialog=new EmojiDialog();
+        if (getChildFragmentManager().findFragmentByTag("emoji_dialog")==null){
+            emojiDialog.show(getChildFragmentManager(),"emoji_dialog");
+        }
+    }
+
+    private void deactivateBrushingTools(boolean animateColorPicker) {
+        btnBrush.setTag("deactivate");
+
+        hideColorPicker(mBrushColorPiker,animateColorPicker);
+        btnBrush.hideBackground();
+        mPhotoEditor.setBrushDrawingMode(false);
+    }
+
+    private void showTextInput(View editingView,String text, int colorCode) {
+        btnInsertText.setTag("active");
+        boolean animate=true;
+        if (Objects.equals(btnBrush.getTag(),"active")){
+            animate=false;
+            deactivateBrushingTools(false);
+        }
+        showColorPicker(mTextColorPicker,animate);
+        btnInsertText.showBackGround();
+        // reset text size
+        edtTextInput.setTextSize(TypedValue.COMPLEX_UNIT_PX,DEFAULT_TEXT_SIZE);
+//                txtTextInputHelper.setTextSize(DEFAULT_TEXT_SIZE);
+
+        mTextInputContainer.setVisibility(View.VISIBLE);
+        edtTextInput.setText(text);
+        edtTextInput.setTextColor(colorCode);
+        edtTextInput.setTag(editingView);
+        btnInsertText.setColor(colorCode);
+        edtTextInput.requestFocus();
+        showKeyboard();
     }
 
     private void manageInsertText() {
         btnInsertText.setTag("deactivate");
-        hideColorPicker(mTextColorPicker);
+        hideColorPicker(mTextColorPicker,true);
 
         CharSequence text=edtTextInput.getText();
         int color= btnInsertText.getColor();
 //        float textSize= TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP,8,getResources().getDisplayMetrics());
         float textSize= edtTextInput.getTextSize() / getResources().getDisplayMetrics().scaledDensity;
         String inputText="";
-        if (!TextUtils.isEmpty(text)){
+        if (!TextUtils.isEmpty(text) && edtTextInput.getTag()==null){ // is in add mode
             //noinspection ConstantConditions
             inputText=text.toString();
             TextStyleBuilder textStyleBuilder=new TextStyleBuilder();
@@ -240,6 +353,15 @@ public class PhotoEditorFragment extends Fragment implements KeyboardHeightProvi
 
             edtTextInput.setText("");
             txtTextInputHelper.setText("");
+        } else if (edtTextInput.getTag() != null) {
+            if (edtTextInput.getTag() instanceof View){
+                View view= (View) edtTextInput.getTag();
+                if (TextUtils.isEmpty(text)){
+                    mPhotoEditor.removeView(view,ViewType.TEXT);
+                }else {
+                    mPhotoEditor.editText(view,text.toString(),color);
+                }
+            }
         }
         btnInsertText.hideBackground();
         mTextInputContainer.setVisibility(View.GONE);
@@ -253,9 +375,13 @@ public class PhotoEditorFragment extends Fragment implements KeyboardHeightProvi
         InputMethodManager imm=(InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.showSoftInput(edtTextInput,InputMethodManager.SHOW_FORCED);
     }
-    private void hideColorPicker(VerticalSlideColorPicker colorPiker) {
+    private void hideColorPicker(VerticalSlideColorPicker colorPiker,boolean animate) {
+        long duration=0;
+        if (animate){
+            duration=ANIMATION_DURATION;
+        }
         int deviceWidth=getResources().getDisplayMetrics().widthPixels;
-        colorPiker.animate().setDuration(ANIMATION_DURATION)
+        colorPiker.animate().setDuration(duration)
                 .alpha(0)
                 .translationX(Math.abs(deviceWidth - colorPiker.getLeft()))
                 .withEndAction(()->{
@@ -264,13 +390,18 @@ public class PhotoEditorFragment extends Fragment implements KeyboardHeightProvi
                 .start();
     }
 
-    private void showColorPicker(VerticalSlideColorPicker colorPiker) {
+    private void showColorPicker(VerticalSlideColorPicker colorPiker,boolean animate) {
+        long duration=0;
+        if (animate){
+            duration=ANIMATION_DURATION;
+        }
         colorPiker.setAlpha(0);
         int deviceWidth=getResources().getDisplayMetrics().widthPixels;
         colorPiker.setTranslationX(Math.abs(deviceWidth - colorPiker.getLeft()));
         colorPiker.setVisibility(View.VISIBLE);
+        long finalDuration = duration;
         colorPiker.post(()->{
-            colorPiker.animate().setDuration(ANIMATION_DURATION)
+            colorPiker.animate().setDuration(finalDuration)
                     .setInterpolator(new FastOutSlowInInterpolator())
                     .alpha(1)
                     .translationX(0)
@@ -287,6 +418,8 @@ public class PhotoEditorFragment extends Fragment implements KeyboardHeightProvi
         edtTextInput=view.findViewById(R.id.spe_photo_editor_edtInputText);
         txtTextInputHelper=view.findViewById(R.id.spe_photo_editor_txtInputTextHelper);
         mTextInputContainer=view.findViewById(R.id.spe_photo_editor_textInputContainer);
+        btnUndo=view.findViewById(R.id.spe_photo_editor_brushUndo);
+        btnEmoji=view.findViewById(R.id.spe_photo_editor_btnEmoji);
     }
 
     @Override
@@ -324,5 +457,16 @@ public class PhotoEditorFragment extends Fragment implements KeyboardHeightProvi
         float diff=top - centerY ;
         float t= -1 * ((inputTextHeight /2f)+ diff );
         edtTextInput.setTranslationY(t);
+    }
+
+    @Override
+    public void onEmojiClicked(String emoji) {
+        mPhotoEditor.addEmoji(emoji);
+    }
+
+    /*Emoji dialog*/
+    @Override
+    public void onDismiss() {
+        btnEmoji.hideBackground();
     }
 }

@@ -269,6 +269,11 @@ class PhotoEditorImpl implements PhotoEditor {
     }
 
     @Override
+    public boolean undoDrawing() {
+        return mGraphicManager.undoDrawing();
+    }
+
+    @Override
     public boolean redo() {
         return mGraphicManager.redoView();
     }
@@ -356,6 +361,11 @@ class PhotoEditorImpl implements PhotoEditor {
     @Override
     public boolean isCacheEmpty() {
         return viewState.getAddedViewsCount() == 0 && viewState.getRedoViewsCount() == 0;
+    }
+
+    @Override
+    public void removeView(View rootView, ViewType viewType) {
+        mGraphicManager.removeView(rootView,viewType);
     }
 
     // region Shape

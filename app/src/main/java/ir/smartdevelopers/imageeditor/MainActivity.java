@@ -1,8 +1,15 @@
 package ir.smartdevelopers.imageeditor;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.RectF;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -23,6 +30,7 @@ import ir.smartdevelopers.smartphotoeditor.photoeditor.shape.ShapeType;
 
 public class MainActivity extends AppCompatActivity  {
 
+    private static final int CROP_REQ_CODE = 656;
     private PhotoEditor mPhotoEditor;
     private PhotoEditorView mPhotoEditorView;
     private PinchZoomViewGroup mZoomLayout;
@@ -43,20 +51,22 @@ public class MainActivity extends AppCompatActivity  {
 
 
         btnBrush.setOnClickListener(v->{
-            mPhotoEditor.addText("salam", Color.BLACK);
-
-            if (Objects.equals(btnBrush.getTag(),"on")){
-//                mPhotoEditor.setBrushDrawingMode(false);
-                btnBrush.setText("turn on brush");
-                btnBrush.setTag("off");
-                btnBrushIcon.hideBackground();
-            }else {
-//                mPhotoEditor.setBrushDrawingMode(true);
-                btnBrush.setText("turn off brush");
-                btnBrush.setTag("on");
-                btnBrushIcon.showBackGround();
-
-            }
+//            mPhotoEditor.addText("salam", Color.BLACK);
+//
+//            if (Objects.equals(btnBrush.getTag(),"on")){
+////                mPhotoEditor.setBrushDrawingMode(false);
+//                btnBrush.setText("turn on brush");
+//                btnBrush.setTag("off");
+//                btnBrushIcon.hideBackground();
+//            }else {
+////                mPhotoEditor.setBrushDrawingMode(true);
+//                btnBrush.setText("turn off brush");
+//                btnBrush.setTag("on");
+//                btnBrushIcon.showBackGround();
+//
+//            }
+            Intent intent=new Intent(this,CropActivity.class);
+            startActivityForResult(intent,CROP_REQ_CODE);
         });
         mPhotoEditor.setOnPhotoEditorListener(new OnPhotoEditorListener() {
             @Override
@@ -127,5 +137,42 @@ public class MainActivity extends AppCompatActivity  {
 
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode==CROP_REQ_CODE){
+            if (resultCode == RESULT_OK && data!=null){
+                RectF rectF=data.getParcelableExtra("rect");
+                cropImage(rectF);
+            }
+        }
+    }
 
+    private void cropImage(RectF rectF) {
+        Drawable drawable=mPhotoEditorView.getSource().getDrawable();
+        Bitmap source=drawableToBitmap(drawable);
+        Bitmap cropped=Bitmap.createBitmap(source,(int)rectF.left,(int)rectF.top,(int)rectF.width(),(int)rectF.height());
+        mPhotoEditorView.getSource().setImageBitmap(cropped);
+    }
+    public static Bitmap drawableToBitmap (Drawable drawable) {
+        Bitmap bitmap = null;
+
+//        if (drawable instanceof BitmapDrawable) {
+//            BitmapDrawable bitmapDrawable = (BitmapDrawable) drawable;
+//            if(bitmapDrawable.getBitmap() != null) {
+//                return bitmapDrawable.getBitmap();
+//            }
+//        }
+
+        if(drawable.getIntrinsicWidth() <= 0 || drawable.getIntrinsicHeight() <= 0) {
+            bitmap = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888); // Single color bitmap will be created of 1x1 pixel
+        } else {
+            bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+        }
+
+        Canvas canvas = new Canvas(bitmap);
+        drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+        drawable.draw(canvas);
+        return bitmap;
+    }
 }

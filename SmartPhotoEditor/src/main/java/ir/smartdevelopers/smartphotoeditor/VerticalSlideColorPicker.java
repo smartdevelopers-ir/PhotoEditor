@@ -15,7 +15,8 @@ import androidx.annotation.RequiresApi;
 
 public class VerticalSlideColorPicker extends View {
 
-    private int defaultColor;
+    public static final int DEFAULT_COLOR=Color.parseColor("#1E88E5");
+    private int mColor;
     private Paint paint;
     private Paint strokePaint;
     private Path path;
@@ -56,8 +57,8 @@ public class VerticalSlideColorPicker extends View {
 
         try {
             borderColor = a.getColor(R.styleable.VerticalSlideColorPicker_borderColor, Color.WHITE);
-            defaultColor =
-                    a.getColor(R.styleable.VerticalSlideColorPicker_defaultColor, Color.parseColor("#1E88E5"));
+            mColor =
+                    a.getColor(R.styleable.VerticalSlideColorPicker_defaultColor, DEFAULT_COLOR);
             borderWidth = a.getDimension(R.styleable.VerticalSlideColorPicker_borderWidth, 5f);
             int colorsResourceId =
                     a.getResourceId(R.styleable.VerticalSlideColorPicker_colors, 0);
@@ -132,10 +133,10 @@ public class VerticalSlideColorPicker extends View {
         yPos = Math.max(colorPickerBody.top, yPos);
 
         selectorYPos = yPos;
-        defaultColor = bitmap.getPixel(viewWidth / 2, (int) selectorYPos);
+        mColor = bitmap.getPixel(viewWidth / 2, (int) selectorYPos);
 
         if (mListener != null) {
-            mListener.onColorChange(defaultColor);
+            mListener.onColorChange(mColor);
         }
         if (event.getAction()==MotionEvent.ACTION_UP){
             mScaling=false;
@@ -208,7 +209,7 @@ public class VerticalSlideColorPicker extends View {
         selectorYPos = borderWidth + colorPickerRadius;
 
         if (mListener != null) {
-            mListener.onColorChange(defaultColor);
+            mListener.onColorChange(mColor);
         }
 
         invalidate();
@@ -217,12 +218,12 @@ public class VerticalSlideColorPicker extends View {
     public void setListener(Listener listener) {
         this.mListener = listener;
         if (listener != null) {
-            listener.onColorChange(defaultColor);
+            listener.onColorChange(mColor);
         }
     }
 
-    public int getDefaultColor() {
-        return defaultColor;
+    public int getColor() {
+        return mColor;
     }
 
 

@@ -190,6 +190,11 @@ public interface PhotoEditor {
      */
     boolean undo();
 
+    /**Just undo drawings
+     *  @return true if there nothing more to undo
+     * */
+    boolean undoDrawing();
+
     /**
      * Redo the last operation perform on the {@link PhotoEditor}
      *
@@ -284,6 +289,8 @@ public interface PhotoEditor {
      */
     boolean isCacheEmpty();
 
+    /**remove view programmatically*/
+    void removeView(View rootView,ViewType viewType);
     /**
      * Builder pattern to define {@link PhotoEditor} Instance
      */

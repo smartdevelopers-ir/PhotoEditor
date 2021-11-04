@@ -6,12 +6,19 @@
         <entry key="..\:/Users/SmartDevelopers/ImageEditor/SmartPhotoEditor/src/main/res/drawable/ic_text.xml" value="0.25833333333333336" />
         <entry key="..\:/Users/SmartDevelopers/ImageEditor/SmartPhotoEditor/src/main/res/drawable/rounded_border_tv.xml" value="0.25833333333333336" />
         <entry key="..\:/Users/SmartDevelopers/ImageEditor/SmartPhotoEditor/src/main/res/drawable/spe_ic_brush.xml" value="0.25833333333333336" />
+        <entry key="..\:/Users/SmartDevelopers/ImageEditor/SmartPhotoEditor/src/main/res/drawable/spe_ic_emogi.xml" value="0.25833333333333336" />
+        <entry key="..\:/Users/SmartDevelopers/ImageEditor/SmartPhotoEditor/src/main/res/drawable/spe_ic_text.xml" value="0.25833333333333336" />
+        <entry key="..\:/Users/SmartDevelopers/ImageEditor/SmartPhotoEditor/src/main/res/drawable/spe_ic_undo.xml" value="0.25833333333333336" />
         <entry key="..\:/Users/SmartDevelopers/ImageEditor/SmartPhotoEditor/src/main/res/layout/popupwindow.xml" value="0.2421875" />
         <entry key="..\:/Users/SmartDevelopers/ImageEditor/SmartPhotoEditor/src/main/res/layout/spe_brush_button_layout.xml" value="0.2421875" />
+        <entry key="..\:/Users/SmartDevelopers/ImageEditor/SmartPhotoEditor/src/main/res/layout/spe_dialog_emoji_layout.xml" value="0.2421875" />
         <entry key="..\:/Users/SmartDevelopers/ImageEditor/SmartPhotoEditor/src/main/res/layout/spe_fragment_photo_editor.xml" value="0.264" />
+        <entry key="..\:/Users/SmartDevelopers/ImageEditor/SmartPhotoEditor/src/main/res/layout/spe_item_emoji_layout.xml" value="0.2421875" />
         <entry key="..\:/Users/SmartDevelopers/ImageEditor/SmartPhotoEditor/src/main/res/layout/spe_text_button_layout.xml" value="0.2421875" />
         <entry key="..\:/Users/SmartDevelopers/ImageEditor/SmartPhotoEditor/src/main/res/layout/view_photo_editor_text.xml" value="0.2421875" />
+        <entry key="..\:/Users/SmartDevelopers/ImageEditor/app/src/main/res/layout/activity_crop.xml" value="0.2421875" />
         <entry key="..\:/Users/SmartDevelopers/ImageEditor/app/src/main/res/layout/activity_main.xml" value="0.2421875" />
+        <entry key="..\:/Users/SmartDevelopers/ImageEditor/app/src/main/res/layout/activity_test.xml" value="0.23846153846153847" />
       </map>
     </option>
   </component>

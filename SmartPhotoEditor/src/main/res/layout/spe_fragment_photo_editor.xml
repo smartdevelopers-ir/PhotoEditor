@@ -42,14 +42,29 @@
         app:layout_constraintTop_toBottomOf="@id/spe_photo_editor_btnBrush"
         android:visibility="invisible"
         />
-    <ImageButton
-        android:id="@+id/spe_photo_editor_brushEraser"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        app:layout_constraintTop_toBottomOf="@id/spe_photo_editor_brushColorSelector"
-        app:layout_constraintEnd_toEndOf="@id/spe_photo_editor_brushColorSelector"
-        app:layout_constraintStart_toStartOf="@id/spe_photo_editor_brushColorSelector"
+    <ir.smartdevelopers.smartphotoeditor.EmojiButton
+        android:id="@+id/spe_photo_editor_btnEmoji"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        app:layout_constraintTop_toTopOf="@id/spe_photo_editor_btnBrush"
+        app:layout_constraintBottom_toBottomOf="@id/spe_photo_editor_btnBrush"
+        app:layout_constraintEnd_toStartOf="@id/spe_photo_editor_btnInsertText"
+        android:layout_marginEnd="16dp"
         />
+    <androidx.appcompat.widget.AppCompatImageButton
+        android:id="@+id/spe_photo_editor_brushUndo"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        app:layout_constraintTop_toTopOf="@id/spe_photo_editor_btnBrush"
+        app:layout_constraintBottom_toBottomOf="@id/spe_photo_editor_btnBrush"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginStart="16dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        tools:src="@drawable/spe_ic_undo"
+        android:visibility="gone"
+        tools:visibility="visible"
+        />
+
     <!---->
     <FrameLayout
         android:id="@+id/spe_photo_editor_textInputContainer"

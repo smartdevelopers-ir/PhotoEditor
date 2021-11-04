@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="EmojiDialogTheme" parent="Theme.MaterialComponents.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/BottomSheetStyle</item>
+        <item name="android:backgroundDimAmount">0.85</item>
+    </style>
+    <style name="BottomSheetStyle" >
+        <item name="background">@null</item>
+    </style>
+
+</resources>
