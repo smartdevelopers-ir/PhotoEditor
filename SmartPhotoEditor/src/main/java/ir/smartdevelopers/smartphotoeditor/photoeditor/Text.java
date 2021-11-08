@@ -59,7 +59,7 @@ class Text extends Graphic {
 
     @Override
     int getLayoutId() {
-        return R.layout.view_photo_editor_text;
+        return R.layout.spe_view_photo_editor_text;
     }
 
     @Override

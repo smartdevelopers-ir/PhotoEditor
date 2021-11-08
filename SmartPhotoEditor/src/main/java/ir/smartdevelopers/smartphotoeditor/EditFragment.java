@@ -1,5 +1,6 @@
 package ir.smartdevelopers.smartphotoeditor;
 
+import android.Manifest;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.content.Context;
@@ -35,6 +36,7 @@ import android.widget.ProgressBar;
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresPermission;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.fragment.app.Fragment;
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator;
@@ -42,6 +44,7 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.lang.ref.WeakReference;
 import java.util.Objects;
 import java.util.concurrent.ExecutorService;
@@ -52,6 +55,7 @@ import ir.smartdevelopers.smartphotoeditor.photoeditor.OnPhotoEditorListener;
 import ir.smartdevelopers.smartphotoeditor.photoeditor.OnSaveBitmap;
 import ir.smartdevelopers.smartphotoeditor.photoeditor.PhotoEditor;
 import ir.smartdevelopers.smartphotoeditor.photoeditor.PhotoEditorView;
+import ir.smartdevelopers.smartphotoeditor.photoeditor.SaveSettings;
 import ir.smartdevelopers.smartphotoeditor.photoeditor.TextStyleBuilder;
 import ir.smartdevelopers.smartphotoeditor.photoeditor.ViewType;
 import ir.smartdevelopers.smartphotoeditor.photoeditor.shape.ShapeBuilder;
@@ -125,7 +129,7 @@ EmojiDialog.OnEmojiListener{
 
     private void initPhotoEditorListener() {
         mPhotoEditor.setOnPhotoEditorListener(new OnPhotoEditorListener() {
-            private int mDrawingViewCount=0;
+
             private boolean animate=false;
             @Override
             public void onEditTextChangeListener(View rootView, String text, int colorCode,Drawable background) {
@@ -135,20 +139,15 @@ EmojiDialog.OnEmojiListener{
 
             @Override
             public void onAddViewListener(ViewType viewType, int numberOfAddedViews) {
-                if (numberOfAddedViews >0 && viewType==ViewType.BRUSH_DRAWING){
-                    mDrawingViewCount++;
-                }
-                if (mDrawingViewCount > 0){
+                if (numberOfAddedViews > 0){
                     btnUndo.setVisibility(View.VISIBLE);
                 }
             }
 
             @Override
             public void onRemoveViewListener(ViewType viewType, int numberOfAddedViews) {
-                if (viewType == ViewType.BRUSH_DRAWING){
-                    mDrawingViewCount--;
-                }
-                if (mDrawingViewCount==0){
+
+                if (numberOfAddedViews==0){
                     btnUndo.setVisibility(View.GONE);
                 }
             }
@@ -193,8 +192,14 @@ EmojiDialog.OnEmojiListener{
         if (mViewAnimator!=null){
             mViewAnimator.cancel();
         }
+        Fragment parent=getParentFragment();
+        PhotoEditorFragment.OnEditorListener onEditorListener=null;
+        if (parent instanceof PhotoEditorFragment){
+            onEditorListener=((PhotoEditorFragment) parent).getOnEditorListener();
+        }
         mViewAnimator=ObjectAnimator.ofFloat(mAnimatedAlpha,endAlpha);
         mViewAnimator.setDuration(ANIMATION_DURATION);
+        PhotoEditorFragment.OnEditorListener finalOnEditorListener = onEditorListener;
         mViewAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
@@ -206,25 +211,14 @@ EmojiDialog.OnEmojiListener{
                 btnUndo.setAlpha(alpha);
                 mBrushColorPiker.setAlpha(alpha);
                 mAnimatedAlpha=alpha;
+                if (finalOnEditorListener != null) {
+                    finalOnEditorListener.onFadeViews(alpha);
+                }
             }
         });
         mViewAnimator.start();
     }
-    public void save(){
 
-
-        mPhotoEditor.saveAsBitmap(new OnSaveBitmap() {
-            @Override
-            public void onBitmapReady(Bitmap saveBitmap) {
-
-            }
-
-            @Override
-            public void onFailure(Exception e) {
-
-            }
-        });
-    }
     private void initViews() {
         //<editor-fold desc="Brush Section">
         mBrushColorPiker.setVisibility(View.INVISIBLE);
@@ -378,8 +372,6 @@ EmojiDialog.OnEmojiListener{
         btnUndo.setImageResource(R.drawable.spe_ic_undo);
         btnUndo.setOnClickListener(v->{
             mPhotoEditor.undo();
-
-
         });
 
         btnEmoji.setOnClickListener(v->{
@@ -777,6 +769,40 @@ EmojiDialog.OnEmojiListener{
         }
         return  Bitmap.createBitmap(source, 0, 0, source.getWidth(),
                 source.getHeight(), matrix, true);
+    }
+
+
+    public void clearAll(){
+        mPhotoEditor.clearAllViews();
+    }
+    /**
+     * @param compressFormat see {@link Bitmap.CompressFormat} default = {@code Bitmap.CompressFormat.JPEG}
+     * */
+     void saveAsBitmap(@Nullable Bitmap.CompressFormat compressFormat,OnSaveBitmap onSaveBitmap){
+        if (compressFormat==null){
+            compressFormat= Bitmap.CompressFormat.JPEG;
+        }
+        SaveSettings settings=new SaveSettings.Builder()
+                .setClearViewsEnabled(false)
+                .setCompressFormat(compressFormat)
+                .setTransparencyEnabled(true).build();
+        mPhotoEditor.saveAsBitmap(settings,onSaveBitmap);
+    }
+    /**
+     * @param compressFormat see {@link Bitmap.CompressFormat} default = {@code Bitmap.CompressFormat.JPEG}
+     * @param outputStream is outputStream of where you want to save image
+     * */
+    @RequiresPermission(allOf = {Manifest.permission.WRITE_EXTERNAL_STORAGE})
+     void saveAsFile(OutputStream outputStream,@Nullable Bitmap.CompressFormat compressFormat,
+                     PhotoEditor.OnSaveListener onSaveListener){
+        if (compressFormat==null){
+            compressFormat= Bitmap.CompressFormat.JPEG;
+        }
+        SaveSettings settings=new SaveSettings.Builder()
+                .setClearViewsEnabled(false)
+                .setCompressFormat(compressFormat)
+                .setTransparencyEnabled(true).build();
+        mPhotoEditor.saveAsFile(outputStream,settings,onSaveListener);
     }
     @Override
     public void onEmojiClicked(String emoji) {

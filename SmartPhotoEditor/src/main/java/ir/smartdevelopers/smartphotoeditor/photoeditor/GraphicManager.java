@@ -102,18 +102,7 @@ class GraphicManager {
         return mViewState.getAddedViewsCount() != 0;
     }
 
-    public boolean undoDrawing(){
-        int viewCount=mViewState.getAddedViewsCount();
-        if (viewCount > 0) {
-            for (int i=viewCount-1 ; i>=0 ;i--){
-                View removeView = mViewState.getAddedView(i);
-                if (removeView instanceof DrawingView ){
-                    return ((DrawingView) removeView).undo();
-                }
-            }
-        }
-        return false;
-    }
+
 
     public boolean redoView() {
         if (mViewState.getRedoViewsCount() > 0) {

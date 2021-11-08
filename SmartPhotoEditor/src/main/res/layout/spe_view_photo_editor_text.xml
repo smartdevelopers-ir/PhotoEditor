@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_margin="8dp"
-        android:background="@drawable/rounded_border_tv">
+        android:background="@drawable/spe_rounded_border_tv">
 
         <TextView
             android:id="@+id/tvPhotoEditorText"
@@ -29,6 +29,6 @@
         android:layout_height="15dp"
         android:layout_gravity="top|start"
         android:elevation="1dp"
-        android:src="@drawable/ic_remove" />
+        android:src="@drawable/spe_ic_remove" />
 
 </FrameLayout>

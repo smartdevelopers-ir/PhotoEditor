@@ -68,7 +68,7 @@ abstract class Graphic {
         View frmBorder = mRootView.findViewById(R.id.frmBorder);
         View imgClose = mRootView.findViewById(R.id.imgPhotoEditorClose);
         if (frmBorder != null) {
-            frmBorder.setBackgroundResource(R.drawable.rounded_border_tv);
+            frmBorder.setBackgroundResource(R.drawable.spe_rounded_border_tv);
             frmBorder.setTag(true);
         }
         if (imgClose != null) {

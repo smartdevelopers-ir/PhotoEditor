@@ -1,19 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="EmojiDialogTheme" parent="Theme.MaterialComponents.BottomSheetDialog">
-        <item name="bottomSheetStyle">@style/BottomSheetStyle</item>
+    <style name="spe_EmojiDialogTheme" parent="Theme.MaterialComponents.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/spe_BottomSheetStyle</item>
         <item name="android:backgroundDimAmount">0.85</item>
     </style>
-    <style name="BottomSheetStyle" >
+    <style name="spe_BottomSheetStyle" >
         <item name="background">@null</item>
     </style>
 
-    <style name="CropActivityFullScreenTheme" parent="Theme.MaterialComponents.NoActionBar.Bridge">
-        <item name="android:windowTranslucentStatus">true</item>
-        <item name="windowNoTitle">true</item>
-        <item name="android:windowFullscreen">true</item>
-        <item name="windowActionBar">false</item>
-        <item name="android:windowContentOverlay">@null</item>
-        <item name="android:windowBackground">#000000</item>
-    </style>
 </resources>

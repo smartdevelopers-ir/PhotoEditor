@@ -14,7 +14,7 @@ import androidx.annotation.Nullable;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-
+import java.io.OutputStream;
 
 
 /**
@@ -22,7 +22,7 @@ import java.io.IOException;
  *
  * @author <https://github.com/burhanrashid52>
  */
-class PhotoSaverTask extends AsyncTask<String, String, PhotoSaverTask.SaveResult> {
+class PhotoSaverTask extends AsyncTask<OutputStream, String, PhotoSaverTask.SaveResult> {
 
     public static final String TAG = "PhotoSaverTask";
     private @NonNull
@@ -64,28 +64,28 @@ class PhotoSaverTask extends AsyncTask<String, String, PhotoSaverTask.SaveResult
 
     @SuppressLint("MissingPermission")
     @Override
-    protected SaveResult doInBackground(String... inputs) {
+    protected SaveResult doInBackground(OutputStream... outputStreams) {
         // Create a media file name
-        if (inputs.length == 0) {
+        if (outputStreams.length == 0) {
             return saveImageAsBitmap();
         } else {
-            return saveImageInFile(inputs[0]);
+            return saveImageInFile(outputStreams[0]);
         }
     }
 
     private SaveResult saveImageAsBitmap() {
         if (mPhotoEditorView != null) {
-            return new SaveResult(null, null, buildBitmap());
+            return new SaveResult(null, false, buildBitmap());
         } else {
-            return new SaveResult(null, null, null);
+            return new SaveResult(null, false, null);
         }
     }
 
     @NonNull
-    private SaveResult saveImageInFile(String mImagePath) {
-        File file = new File(mImagePath);
+    private SaveResult saveImageInFile(OutputStream out) {
+
         try {
-            FileOutputStream out = new FileOutputStream(file, false);
+//            FileOutputStream out = new FileOutputStream(file, false);
             if (mPhotoEditorView != null) {
                 Bitmap capturedBitmap = buildBitmap();
                 capturedBitmap.compress(mSaveSettings.getCompressFormat(), mSaveSettings.getCompressQuality(), out);
@@ -93,11 +93,11 @@ class PhotoSaverTask extends AsyncTask<String, String, PhotoSaverTask.SaveResult
             out.flush();
             out.close();
             Log.d(TAG, "Filed Saved Successfully");
-            return new SaveResult(null, mImagePath, null);
+            return new SaveResult(null, true, null);
         } catch (IOException e) {
             e.printStackTrace();
             Log.e(TAG, "Failed to save File");
-            return new SaveResult(e, mImagePath, null);
+            return new SaveResult(e, true, null);
         }
     }
 
@@ -110,7 +110,7 @@ class PhotoSaverTask extends AsyncTask<String, String, PhotoSaverTask.SaveResult
     @Override
     protected void onPostExecute(SaveResult saveResult) {
         super.onPostExecute(saveResult);
-        if (TextUtils.isEmpty(saveResult.mImagePath)) {
+        if (!saveResult.asFile) {
             handleBitmapCallback(saveResult);
         } else {
             handleFileCallback(saveResult);
@@ -120,15 +120,15 @@ class PhotoSaverTask extends AsyncTask<String, String, PhotoSaverTask.SaveResult
 
     private void handleFileCallback(SaveResult saveResult) {
         Exception exception = saveResult.mException;
-        String imagePath = saveResult.mImagePath;
+//        String imagePath = saveResult.mImagePath;
         if (exception == null) {
             //Clear all views if its enabled in save settings
             if (mSaveSettings.isClearViewsEnabled()) {
                 mBoxHelper.clearAllViews(mDrawingView);
             }
             if (mOnSaveListener != null) {
-                assert imagePath != null;
-                mOnSaveListener.onSuccess(imagePath);
+//                assert imagePath != null;
+                mOnSaveListener.onSuccess();
             }
         } else {
             if (mOnSaveListener != null) {
@@ -168,19 +168,19 @@ class PhotoSaverTask extends AsyncTask<String, String, PhotoSaverTask.SaveResult
         execute();
     }
 
-    public void saveFile(String imagePath) {
-        execute(imagePath);
+    public void saveFile(OutputStream outputStream) {
+        execute(outputStream);
     }
 
     static class SaveResult {
         final Exception mException;
-        final String mImagePath;
         final Bitmap mBitmap;
+        final boolean asFile;
 
-        public SaveResult(Exception exception, String imagePath, Bitmap bitmap) {
+        public SaveResult(Exception exception, boolean asFile,Bitmap bitmap) {
             mException = exception;
-            mImagePath = imagePath;
             mBitmap = bitmap;
+            this.asFile = asFile;
         }
     }
 }

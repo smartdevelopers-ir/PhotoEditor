@@ -19,6 +19,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresPermission;
 
+import java.io.OutputStream;
+
 import ir.smartdevelopers.smartphotoeditor.R;
 import ir.smartdevelopers.smartphotoeditor.photoeditor.shape.ShapeBuilder;
 
@@ -268,10 +270,6 @@ class PhotoEditorImpl implements PhotoEditor {
         return mGraphicManager.undoView();
     }
 
-    @Override
-    public boolean undoDrawing() {
-        return mGraphicManager.undoDrawing();
-    }
 
     @Override
     public boolean redo() {
@@ -300,23 +298,23 @@ class PhotoEditorImpl implements PhotoEditor {
 
     @Override
     @RequiresPermission(allOf = {Manifest.permission.WRITE_EXTERNAL_STORAGE})
-    public void saveAsFile(@NonNull final String imagePath, @NonNull final OnSaveListener onSaveListener) {
-        saveAsFile(imagePath, new SaveSettings.Builder().build(), onSaveListener);
+    public void saveAsFile(@NonNull final OutputStream outputStream, @NonNull final OnSaveListener onSaveListener) {
+        saveAsFile(outputStream, new SaveSettings.Builder().build(), onSaveListener);
     }
 
     @Override
     @SuppressLint("StaticFieldLeak")
-    public void saveAsFile(@NonNull final String imagePath,
+    public void saveAsFile(@NonNull final OutputStream outputStream,
                            @NonNull final SaveSettings saveSettings,
                            @NonNull final OnSaveListener onSaveListener) {
-        Log.d(TAG, "Image Path: " + imagePath);
+//        Log.d(TAG, "Image Path: " + outputStream);
         parentView.saveFilter(new OnSaveBitmap() {
             @Override
             public void onBitmapReady(Bitmap saveBitmap) {
                 PhotoSaverTask photoSaverTask = new PhotoSaverTask(parentView, mBoxHelper);
                 photoSaverTask.setOnSaveListener(onSaveListener);
                 photoSaverTask.setSaveSettings(saveSettings);
-                photoSaverTask.execute(imagePath);
+                photoSaverTask.execute(outputStream);
             }
 
             @Override

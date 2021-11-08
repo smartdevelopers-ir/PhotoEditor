@@ -16,6 +16,8 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresPermission;
 import androidx.annotation.UiThread;
 
+import java.io.OutputStream;
+
 import ir.smartdevelopers.smartphotoeditor.photoeditor.shape.ShapeBuilder;
 
 /**
@@ -190,11 +192,6 @@ public interface PhotoEditor {
      */
     boolean undo();
 
-    /**Just undo drawings
-     *  @return true if there nothing more to undo
-     * */
-    boolean undoDrawing();
-
     /**
      * Redo the last operation perform on the {@link PhotoEditor}
      *
@@ -232,25 +229,25 @@ public interface PhotoEditor {
     /**
      * Save the edited image on given path
      *
-     * @param imagePath      path on which image to be saved
+     * @param outputStream      outputStream on which image to be saved
      * @param onSaveListener callback for saving image
      * @see OnSaveListener
      */
     @RequiresPermission(allOf = {Manifest.permission.WRITE_EXTERNAL_STORAGE})
-    void saveAsFile(@NonNull String imagePath, @NonNull PhotoEditor.OnSaveListener onSaveListener);
+    void saveAsFile(@NonNull OutputStream outputStream, @NonNull PhotoEditor.OnSaveListener onSaveListener);
 
 
     /**
      * Save the edited image on given path
      *
-     * @param imagePath      path on which image to be saved
+     * @param outputStream      outputStream on which image to be saved
      * @param saveSettings   builder for multiple save options {@link SaveSettings}
      * @param onSaveListener callback for saving image
      * @see OnSaveListener
      */
     @SuppressLint("StaticFieldLeak")
     @RequiresPermission(allOf = {Manifest.permission.WRITE_EXTERNAL_STORAGE})
-    void saveAsFile(@NonNull String imagePath,
+    void saveAsFile(@NonNull OutputStream outputStream,
                     @NonNull SaveSettings saveSettings,
                     @NonNull PhotoEditor.OnSaveListener onSaveListener);
 
@@ -385,11 +382,10 @@ public interface PhotoEditor {
     interface OnSaveListener {
 
         /**
-         * Call when edited image is saved successfully on given path
+         * Call when edited image is saved successfully
          *
-         * @param imagePath path on which image is saved
          */
-        void onSuccess(@NonNull String imagePath);
+        void onSuccess();
 
         /**
          * Call when failed to saved image on given path
