@@ -43,8 +43,12 @@ public class TextButton extends ConstraintLayout {
         imgIcon.setImageResource(R.drawable.spe_ic_text);
     }
 
-
-   
+    public void changeIconToFilledBackground(){
+        imgIcon.setImageResource(R.drawable.spe_ic_text_filled);
+    }
+    public void changeIconToNoBackground(){
+        imgIcon.setImageResource(R.drawable.spe_ic_text);
+    }
     
     public void showBackGround(){
         mBackgroundView.setScaleX(0);

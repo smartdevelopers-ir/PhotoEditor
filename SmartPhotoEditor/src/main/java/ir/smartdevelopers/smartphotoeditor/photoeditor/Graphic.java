@@ -81,15 +81,20 @@ abstract class Graphic {
         return new MultiTouchListener.OnGestureControl() {
             @Override
             public void onClick() {
+                if (viewState.getCurrentSelectedView()==mRootView){
+                    updateView(mRootView);
+                    return;
+                }
                 boxHelper.clearHelperBox();
                 toggleSelection();
                 // Change the in-focus view
                 viewState.setCurrentSelectedView(mRootView);
+
             }
 
             @Override
             public void onLongClick() {
-                updateView(mRootView);
+//                updateView(mRootView);
             }
         };
     }

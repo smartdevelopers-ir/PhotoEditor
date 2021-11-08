@@ -8,4 +8,12 @@
         <item name="background">@null</item>
     </style>
 
+    <style name="CropActivityFullScreenTheme" parent="Theme.MaterialComponents.NoActionBar.Bridge">
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="windowActionBar">false</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowBackground">#000000</item>
+    </style>
 </resources>

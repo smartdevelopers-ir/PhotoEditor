@@ -1,5 +1,6 @@
 package ir.smartdevelopers.smartphotoeditor.photoeditor;
 
+import android.graphics.drawable.Drawable;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -23,7 +24,7 @@ public interface OnPhotoEditorListener {
      * @param text      current text set on the view
      * @param colorCode current color value set on view
      */
-    void onEditTextChangeListener(View rootView, String text, int colorCode);
+    void onEditTextChangeListener(View rootView, String text, int colorCode, Drawable background);
 
     /**
      * This is a callback when user adds any view on the {@link PhotoEditorView} it can be

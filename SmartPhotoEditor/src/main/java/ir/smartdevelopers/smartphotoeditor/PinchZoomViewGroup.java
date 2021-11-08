@@ -51,6 +51,8 @@ public class PinchZoomViewGroup extends FrameLayout implements ScaleGestureDetec
         init(context);
     }
 
+    private float lastMoveX,lastMoveY;
+    private boolean isMoving;
     @SuppressLint("ClickableViewAccessibility")
     public void init(Context context) {
         final ScaleGestureDetector scaleDetector = new ScaleGestureDetector(context, this);
@@ -63,15 +65,26 @@ public class PinchZoomViewGroup extends FrameLayout implements ScaleGestureDetec
                             mode = Mode.DRAG;
                             startX = motionEvent.getX() - prevDx;
                             startY = motionEvent.getY() - prevDy;
+                            lastMoveX=motionEvent.getX();
+                            lastMoveY=motionEvent.getY();
                         }else {
                             mode= Mode.NONE;
                         }
                         break;
                     case MotionEvent.ACTION_MOVE:
+                        if (!isMoving){
+                            float diffX=Math.abs(lastMoveX-motionEvent.getX());
+                            float diffY=Math.abs(lastMoveY-motionEvent.getY());
+                            if (diffX < 15 || diffY < 15){
+                                return true;
+                            }
+                        }
                         if (mode == Mode.DRAG && scrollEnabled) {
                             dx = motionEvent.getX() - startX;
                             dy = motionEvent.getY() - startY;
+
                         }
+                        isMoving=true;
                         break;
                     case MotionEvent.ACTION_POINTER_DOWN:
                         if (zoomEnabled){
@@ -79,6 +92,7 @@ public class PinchZoomViewGroup extends FrameLayout implements ScaleGestureDetec
                         }else {
                             mode= Mode.NONE;
                         }
+                        isMoving=true;
                         break;
                     case MotionEvent.ACTION_POINTER_UP:
                         if (scrollEnabled){
@@ -86,11 +100,16 @@ public class PinchZoomViewGroup extends FrameLayout implements ScaleGestureDetec
                         }else {
                             mode = Mode.NONE;
                         }
-                        break;
+                        lastMoveY=motionEvent.getY();
+                        lastMoveX=motionEvent.getX();
+                        isMoving=false;
+                        return true;
+//                        break;
                     case MotionEvent.ACTION_UP:
                         mode = Mode.NONE;
                         prevDx = dx;
                         prevDy = dy;
+                        isMoving=false;
                         break;
                 }
                 scaleDetector.onTouchEvent(motionEvent);
@@ -102,6 +121,7 @@ public class PinchZoomViewGroup extends FrameLayout implements ScaleGestureDetec
                     dx = Math.min(Math.max(dx, -maxDx), maxDx);
                     dy = Math.min(Math.max(dy, -maxDy), maxDy);
                     applyScaleAndTranslation();
+
                 }
 
                 return true;

@@ -77,7 +77,7 @@ class Text extends Graphic {
         int currentTextColor = mTextView.getCurrentTextColor();
         OnPhotoEditorListener photoEditorListener = mGraphicManager.getOnPhotoEditorListener();
         if (photoEditorListener != null) {
-            photoEditorListener.onEditTextChangeListener(view, textInput, currentTextColor);
+            photoEditorListener.onEditTextChangeListener(view, textInput, currentTextColor,mTextView.getBackground());
         }
     }
 }

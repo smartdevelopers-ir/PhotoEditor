@@ -97,7 +97,7 @@ public class PhotoEditorView extends RelativeLayout {
     private LayoutParams setupImageSource(@Nullable AttributeSet attrs) {
         mImgSource.setId(imgSrcId);
         mImgSource.setAdjustViewBounds(true);
-        mImgSource.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+//        mImgSource.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
 
         if (attrs != null) {
             TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.PhotoEditorView);
@@ -159,7 +159,7 @@ public class PhotoEditorView extends RelativeLayout {
         return mImgSource;
     }
 
-    DrawingView getDrawingView() {
+   public DrawingView getDrawingView() {
         return mDrawingView;
     }
 

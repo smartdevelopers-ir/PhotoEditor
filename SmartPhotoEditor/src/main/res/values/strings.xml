@@ -405,4 +405,7 @@
         <item>u+1f4cd</item>
         <item>u+1f6a9</item>
     </string-array>
+
+    <string name="spe_done">Done</string>
+    <string name="spe_cancel">Cancel</string>
 </resources>

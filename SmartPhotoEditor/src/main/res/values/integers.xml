@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <integer name="spe_emoji_span_count">6</integer>
+    <integer name="spe_fragment_anim_duration">150</integer>
 </resources>
