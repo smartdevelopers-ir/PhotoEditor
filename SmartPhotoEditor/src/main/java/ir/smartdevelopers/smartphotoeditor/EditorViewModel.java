@@ -10,12 +10,14 @@ import androidx.lifecycle.ViewModel;
  public class EditorViewModel extends ViewModel {
     private final MutableLiveData<Bitmap> mScaledBitmapLiveData;
     private final MutableLiveData<Bitmap> mEditedBitmap;
+    private final MutableLiveData<Bitmap> mThumbnailLiveData;
     private final MutableLiveData<RectF> mWindowCroppedRectLiveData;
     private final MutableLiveData<Rect> mImageCroppedRectLiveData;
 
 
     public EditorViewModel() {
         mScaledBitmapLiveData=new MutableLiveData<>();
+        mThumbnailLiveData =new MutableLiveData<>();
         mWindowCroppedRectLiveData =new MutableLiveData<>();
         mImageCroppedRectLiveData =new MutableLiveData<>();
         mEditedBitmap =new MutableLiveData<>();
@@ -26,11 +28,17 @@ import androidx.lifecycle.ViewModel;
      void setEditedBitmap(Bitmap editedBitmap){
          mEditedBitmap.setValue(editedBitmap);
      }
+     void setThumbnail(Bitmap editedBitmap){
+         mThumbnailLiveData.setValue(editedBitmap);
+     }
      Bitmap getScaledSourceBitmap(){
         return mScaledBitmapLiveData.getValue();
      }
      Bitmap getEditedBitmap(){
         return mEditedBitmap.getValue();
+     }
+     Bitmap getThumbnail(){
+        return mThumbnailLiveData.getValue();
      }
 
       MutableLiveData<Bitmap> getScaledBitmapLiveData() {

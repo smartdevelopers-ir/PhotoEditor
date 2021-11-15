@@ -20,6 +20,15 @@ import ir.smartdevelopers.smartphotoeditor.cropper.CropImageView;
 public class CropFragment extends Fragment {
     private CropImageView mCropImageView;
     private EditorViewModel mEditorViewModel;
+    private String mParentTag;
+
+    public static CropFragment getInstance(String parentTag) {
+        CropFragment fragment=new CropFragment();
+        Bundle bundle=new Bundle();
+        bundle.putString("mParentTag",parentTag);
+        fragment.setArguments(bundle);
+        return fragment;
+    }
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -29,7 +38,15 @@ public class CropFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mEditorViewModel=new ViewModelProvider(getParentFragment()).get(EditorViewModel.class);
+        Bundle bundle=getArguments();
+        if (bundle != null) {
+            mParentTag=bundle.getString("mParentTag");
+        }
+        Fragment owner=getParentFragmentManager().findFragmentByTag(mParentTag);
+        if (owner==null){
+            owner=this;
+        }
+        mEditorViewModel=new ViewModelProvider(owner).get(EditorViewModel.class);
         mCropImageView=view.findViewById(R.id.spe_cropView);
         AppCompatButton btnDone=view.findViewById(R.id.spe_btnDone);
         AppCompatButton btnCancel=view.findViewById(R.id.spe_btnCancel);
@@ -70,9 +87,14 @@ public class CropFragment extends Fragment {
     }
 
     private void close() {
-        if (getParentFragment() instanceof PhotoEditorFragment){
-            PhotoEditorFragment fragment=(PhotoEditorFragment) getParentFragment();
-            fragment.goToEditFragment();
+        Fragment editFragment=getParentFragmentManager().findFragmentByTag(mParentTag);
+        if (editFragment instanceof PhotoEditorFragment){
+            PhotoEditorFragment photoEditorFragment= (PhotoEditorFragment) editFragment;
+            if (photoEditorFragment.getOnEditorListener() !=null){
+                photoEditorFragment.getOnEditorListener().onCropWindowClosed();
+            }
         }
+        getParentFragmentManager().popBackStack();
+
     }
 }
