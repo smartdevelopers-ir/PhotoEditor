@@ -22,15 +22,18 @@ public class BrushButton extends ConstraintLayout {
     private final float MAX_BRASH_SIZE=48.0f;
     private float mBrushSize= MIN_BRUSH_SCALE;
     public BrushButton(@NonNull Context context) {
-        this(context,null);
+        super(context);
+        init(context);
     }
 
     public BrushButton(@NonNull Context context, @Nullable AttributeSet attrs) {
-        this(context, attrs,0);
+        super(context, attrs);
+        init(context);
     }
 
     public BrushButton(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
-        this(context, attrs, defStyleAttr,0);
+        super(context, attrs, defStyleAttr);
+        init(context);
     }
 
     public BrushButton(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr, int defStyleRes) {

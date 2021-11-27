@@ -233,7 +233,7 @@ public interface PhotoEditor {
      * @param onSaveListener callback for saving image
      * @see OnSaveListener
      */
-    @RequiresPermission(allOf = {Manifest.permission.WRITE_EXTERNAL_STORAGE})
+
     void saveAsFile(@NonNull OutputStream outputStream, @NonNull PhotoEditor.OnSaveListener onSaveListener);
 
 
@@ -246,7 +246,7 @@ public interface PhotoEditor {
      * @see OnSaveListener
      */
     @SuppressLint("StaticFieldLeak")
-    @RequiresPermission(allOf = {Manifest.permission.WRITE_EXTERNAL_STORAGE})
+
     void saveAsFile(@NonNull OutputStream outputStream,
                     @NonNull SaveSettings saveSettings,
                     @NonNull PhotoEditor.OnSaveListener onSaveListener);

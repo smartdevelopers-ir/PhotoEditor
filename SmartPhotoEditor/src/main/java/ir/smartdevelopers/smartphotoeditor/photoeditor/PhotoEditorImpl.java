@@ -297,7 +297,6 @@ class PhotoEditorImpl implements PhotoEditor {
     }
 
     @Override
-    @RequiresPermission(allOf = {Manifest.permission.WRITE_EXTERNAL_STORAGE})
     public void saveAsFile(@NonNull final OutputStream outputStream, @NonNull final OnSaveListener onSaveListener) {
         saveAsFile(outputStream, new SaveSettings.Builder().build(), onSaveListener);
     }

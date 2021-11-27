@@ -8,6 +8,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.graphics.Rect;
+import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
@@ -36,7 +37,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresPermission;
 import androidx.appcompat.widget.AppCompatTextView;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.core.view.ViewCompat;
+
 import androidx.fragment.app.Fragment;
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator;
 import androidx.lifecycle.Observer;
@@ -107,6 +110,8 @@ EmojiDialog.OnEmojiListener{
         return inflater.inflate(R.layout.spe_fragment_edit_layout,container,false);
     }
 
+
+
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -142,6 +147,8 @@ EmojiDialog.OnEmojiListener{
 
         initPhotoEditorListener();
     }
+
+
 
     private void initPhotoEditorListener() {
         mPhotoEditor.setOnPhotoEditorListener(new OnPhotoEditorListener() {
@@ -823,7 +830,6 @@ EmojiDialog.OnEmojiListener{
      * @param compressFormat see {@link Bitmap.CompressFormat} default = {@code Bitmap.CompressFormat.JPEG}
      * @param outputStream is outputStream of where you want to save image
      * */
-    @RequiresPermission(allOf = {Manifest.permission.WRITE_EXTERNAL_STORAGE})
      public void saveAsFile(OutputStream outputStream,@Nullable Bitmap.CompressFormat compressFormat,
                      PhotoEditor.OnSaveListener onSaveListener){
         if (compressFormat==null){

@@ -18,15 +18,18 @@ public class TextButton extends ConstraintLayout {
     private int mColor= Color.parseColor("#1E88E5");
     
     public TextButton(@NonNull Context context) {
-        this(context,null);
+        super(context);
+        init(context);
     }
 
     public TextButton(@NonNull Context context, @Nullable AttributeSet attrs) {
-        this(context, attrs,0);
+        super(context, attrs);
+        init(context);
     }
 
     public TextButton(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
-        this(context, attrs, defStyleAttr,0);
+        super(context, attrs, defStyleAttr);
+        init(context);
     }
 
     public TextButton(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr, int defStyleRes) {

@@ -6,6 +6,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import androidx.appcompat.widget.AppCompatTextView;
+
 import ir.smartdevelopers.smartphotoeditor.R;
 
 
@@ -20,7 +22,7 @@ class Emoji extends Graphic {
     private final Typeface mDefaultEmojiTypeface;
     private final ViewGroup mPhotoEditorView;
     private final PhotoEditorViewState mViewState;
-    private TextView txtEmoji;
+    private AppCompatTextView txtEmoji;
 
     public Emoji(ViewGroup photoEditorView,
                  MultiTouchListener multiTouchListener,
