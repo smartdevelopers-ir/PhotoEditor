@@ -123,7 +123,7 @@ EmojiDialog.OnEmojiListener{
         mKeyboardHeightProvider=new KeyboardHeightProvider(view);
         view.post(()->{
             mKeyboardHeightProvider.start();
-            translateTextInputToCenter();
+//            translateTextInputToCenter();
         });
         Bundle bundle=getArguments();
         if (bundle != null) {
@@ -257,6 +257,10 @@ EmojiDialog.OnEmojiListener{
                 btnBrush.setTag("active");
                 showColorPicker(mBrushColorPiker,true);
                 btnBrush.showBackGround();
+                ShapeBuilder shapeBuilder=new ShapeBuilder()
+                        .withShapeSize(btnBrush.getBrushSize())
+                        .withShapeColor(btnBrush.getColor());
+                mPhotoEditor.setShape(shapeBuilder);
                 mPhotoEditor.setBrushDrawingMode(true);
             }
         });
@@ -507,6 +511,7 @@ EmojiDialog.OnEmojiListener{
 //                txtTextInputHelper.setTextSize(DEFAULT_TEXT_SIZE);
 
         mTextInputContainer.setVisibility(View.VISIBLE);
+        mTextInputContainer.post(this::translateTextInputToCenter);
         edtTextInput.setText(text);
         if (!TextUtils.isEmpty(text)){
             edtTextInput.setSelection(text.length());
@@ -750,6 +755,8 @@ EmojiDialog.OnEmojiListener{
         float top=edtTextInput.getTop();
         float diff=top - centerY ;
         float t= -1 * ((inputTextHeight /2f)+ diff );
+        int[] pos=new int[2];
+        edtTextInput.getLocationOnScreen(pos);
         edtTextInput.setTranslationY(t);
     }
 
