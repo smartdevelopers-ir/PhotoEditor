@@ -5,11 +5,11 @@ plugins {
 }
 
 android {
-    compileSdk 31
 
     defaultConfig {
         minSdk 19
-        targetSdk 31
+        targetSdk 36
+        compileSdkVersion 36
         versionCode 1
         versionName "1.0"
 
@@ -23,34 +23,35 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
     }
     buildFeatures {
         viewBinding true
     }
+    namespace 'ir.smartdevelopers.smartphotoeditor'
+    publishing {
+        singleVariant('release') {
+            withSourcesJar()
+        }
+    }
 }
 
 dependencies {
+    implementation libs.appcompat
+    implementation libs.androidxcore
+    implementation libs.material
+    implementation libs.activity
+    implementation libs.constraintlayout
+    implementation libs.exifinterface
+    implementation libs.glide
 
-    implementation 'androidx.appcompat:appcompat:1.4.0'
-    implementation 'com.google.android.material:material:1.4.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.2'
-    implementation "androidx.exifinterface:exifinterface:1.3.3"
-    implementation 'com.github.bumptech.glide:glide:4.12.0'
-    annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
+    annotationProcessor libs.compiler
 
 }
 group = 'ir.smartdevelopers'
-version = '1.1.3'
-task sourcesJar(type: Jar) {
-    archiveClassifier.set("sources")
-    from android.sourceSets.main.java.srcDirs
-}
-task javadocJar2(type: Jar) {
-    archiveClassifier.set( 'javadoc')
-    from android.sourceSets.main.java.srcDirs
-}
+version = '1.1.4'
+
 afterEvaluate{
     publishing {
         publications {
@@ -98,9 +99,4 @@ afterEvaluate{
 }
 signing {
     sign configurations.archives
-}
-
-artifacts {
-    archives sourcesJar
-    archives javadocJar2
 }

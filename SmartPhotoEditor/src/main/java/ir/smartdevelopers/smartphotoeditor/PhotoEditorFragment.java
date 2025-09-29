@@ -94,6 +94,7 @@ EmojiDialog.OnEmojiListener{
 //    private Bitmap mThumbnail;
     private boolean mShowThumbnail;
     private OnEditorListener mOnEditorListener;
+    private Bitmap mPreview;
 
 
     public static PhotoEditorFragment getInstance(Uri imageUri,boolean showThumbnail) {
@@ -101,6 +102,15 @@ EmojiDialog.OnEmojiListener{
         Bundle bundle=new Bundle();
         bundle.putString("mImageUri",String.valueOf(imageUri));
         bundle.putBoolean("mShowThumbnail",showThumbnail);
+        fragment.setArguments(bundle);
+        return fragment;
+    }
+    public static PhotoEditorFragment getInstance(Uri imageUri,Bitmap preview) {
+        PhotoEditorFragment fragment=new PhotoEditorFragment();
+        Bundle bundle=new Bundle();
+        bundle.putString("mImageUri",String.valueOf(imageUri));
+        bundle.putParcelable("mPreview",preview);
+
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -131,6 +141,7 @@ EmojiDialog.OnEmojiListener{
             if (!TextUtils.isEmpty(uriSt)){
                 mImageUri =Uri.parse(uriSt);
             }
+            mPreview = bundle.getParcelable("mPreview");
             mShowThumbnail=bundle.getBoolean("mShowThumbnail");
 
         }
@@ -141,10 +152,13 @@ EmojiDialog.OnEmojiListener{
 //        mPhotoEditorView.getSource().setImageBitmap(mThumbnail);
 //        mPhotoEditorView.getSource().setImageBitmap(getThumbnail(mImageUri));
 
-        setImageUri(mImageUri);
+
 //        Glide.with(view).load(mImageUri).into(mPhotoEditorView.getSource());
         initViews();
-
+        if (mPreview != null){
+            mPhotoEditorView.getSource().setImageBitmap(mPreview);
+        }
+        setImageUri(mImageUri);
         initPhotoEditorListener();
     }
 
@@ -889,6 +903,7 @@ EmojiDialog.OnEmojiListener{
         void onCloseAddInputText();
         void onInputTextAdded(CharSequence text);
         void onInputTextEdited(CharSequence editedText);
+        void OnPreviewLoaded();
     }
     public static abstract class SimpleOnEditorListener implements PhotoEditorFragment.OnEditorListener {
         public void onCropWindowClosed() {}
@@ -901,6 +916,7 @@ EmojiDialog.OnEmojiListener{
         public void onCloseAddInputText(){}
         public void onInputTextAdded(CharSequence text){}
         public void onInputTextEdited(CharSequence editedText){}
+        public void OnPreviewLoaded(){}
     }
 
 }
